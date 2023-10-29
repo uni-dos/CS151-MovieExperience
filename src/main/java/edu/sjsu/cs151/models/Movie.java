@@ -18,9 +18,19 @@ public class Movie {
     @SerializedName("Poster")
     String posterURL;
 
+    @SerializedName("Plot")
+    String plot;
+
+    @SerializedName("Genre")
+    String genre;
+
 
     public String getTitle() {
         return title;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 
     public String getRated() {
@@ -30,6 +40,8 @@ public class Movie {
     public String getYear() {
         return year;
     }
+
+    public String getPlot(){return plot;}
 
     public String getRuntime() {
         return runtime;

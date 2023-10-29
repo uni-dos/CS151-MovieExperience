@@ -7,11 +7,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class Main {
     public static void main(String[] args) {
         MovieRequest connection = RetrofitInstance.getRetrofitInstance();
 
-        Call<Movie> m = connection.getMovieData("Super Mario", "2023");
+
+        Call<Movie> m = connection.getMovieData("M3GAN", null);
 
         m.enqueue(new Callback<>() {
             @Override
@@ -21,9 +23,15 @@ public class Main {
                     Movie movie = response.body();
 
                     System.out.println(movie.getTitle());
+                    System.out.println(movie.getRated());
+                    System.out.println(movie.getPosterURL());
+                    System.out.println(movie.getGenre());
+                    System.out.println(movie.getPlot());
+
                 } else {
                     System.out.println(response.errorBody());
                 }
+
 
             }
 
