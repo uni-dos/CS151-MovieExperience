@@ -1,5 +1,8 @@
-package com.example.movieexperiencegui;
+package edu.sjsu.cs151;
 
+import edu.sjsu.cs151.models.Movie;
+import edu.sjsu.cs151.network.MovieRequest;
+import edu.sjsu.cs151.network.RetrofitInstance;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +11,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.IOException;
 
@@ -19,7 +25,7 @@ public class MovieExperienceController {
 
     //homepage page when choosing between user or admin
     public void onUserButtonClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("UserLogin.fxml"));
+        root = FXMLLoader.load(getClass().getResource("userLogin.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -102,6 +108,20 @@ public class MovieExperienceController {
 
     public void onAdminSearchMovieButtonClick() {
 
+        MovieRequest connection = RetrofitInstance.getRetrofitInstance();
+
+        connection.getMovieData("Five Nights At Freddy's", "2023").enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                assert response.body() != null;
+                System.out.println(response.body().getTitle());
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable throwable) {
+
+            }
+        });
     }
     public void onAdminAddMovieButtonClick() {
 
