@@ -50,4 +50,8 @@ public class Movie {
     public String getPosterURL() {
         return posterURL;
     }
+
+    public String toString() {
+        return getTitle() + " " + getYear() + " " + getPlot() + " " + getGenre() + " " + getRated();
+    }
 }
