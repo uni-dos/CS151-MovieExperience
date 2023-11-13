@@ -39,7 +39,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="21.0" layoutY="151.0" promptText="Movie Name:" />
+      <TextField fx:id="networkMovieSearchTextField" layoutX="21.0" layoutY="151.0" promptText="Movie Name:" />
       <TextField layoutX="225.0" layoutY="151.0" promptText="Movie Name:" />
       <TextField layoutX="418.0" layoutY="151.0" promptText="Movie Name:" />
       <Button layoutX="52.0" layoutY="187.0" mnemonicParsing="false" onAction="#onAdminSearchMovieButtonClick" text="Search Movie" />
