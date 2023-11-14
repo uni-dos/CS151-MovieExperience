@@ -1,4 +1,4 @@
-package edu.sjsu.cs151.database;
+package edu.sjsu.cs151;
 
 import edu.sjsu.cs151.models.Movie;
 import java.sql.Connection;
