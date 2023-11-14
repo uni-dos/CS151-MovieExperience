@@ -121,11 +121,14 @@ public class MovieExperienceController {
 
         MovieRequest connection = RetrofitInstance.getRetrofitInstance();
 
+        Database db = Database.getInstance();
         connection.getMovieData(movieToSearch, null).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 assert response.body() != null;
                 System.out.println(response.body());
+                db.saveMovie(response.body());
+
             }
 
             @Override
