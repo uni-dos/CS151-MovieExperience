@@ -32,6 +32,8 @@ public class MovieExperienceController {
     @FXML
     private TextField networkMovieSearchTextField;
 
+    private Movie temp = null;
+
 
     //homepage page when choosing between user or admin
     public void onUserButtonClick(ActionEvent event) throws IOException {
@@ -126,6 +128,7 @@ public class MovieExperienceController {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 assert response.body() != null;
+                temp = response.body();
                 System.out.println(response.body());
                 db.saveMovie(response.body());
 
@@ -139,7 +142,9 @@ public class MovieExperienceController {
     }
 
     public void onAdminAddMovieButtonClick() {
-
+        if (temp != null) {
+            // add to database here
+        }
     }
 
     public void onAdminRemoveMovieButtonClick() {
