@@ -142,8 +142,9 @@ public class MovieExperienceController {
     }
 
     public void onAdminAddMovieButtonClick() {
-        if (temp != null) {
+        if (temp != null && temp.getTitle() != null) {
             // add to database here
+            Database.getInstance().saveMovie(temp);
         }
     }
 
