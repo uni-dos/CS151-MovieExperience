@@ -2,4 +2,4 @@
 /out/
 /.idea/
 /target/
-/identifier.sqlite
+/*.sqlite
