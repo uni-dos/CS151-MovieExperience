@@ -151,7 +151,7 @@ public class MovieExperienceController implements Initializable {
         movieStartTime = userStartTimeTextField.getText();
         movieEndTime = userEndTimeTextField.getText();
 
-        root = FXMLLoader.load(getClass().getResource("availableMovieList.fxml"));
+        root = FXMLLoader.load(getClass().getResource("userMovieList.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -286,7 +286,7 @@ public class MovieExperienceController implements Initializable {
 
     //removes the corresponding string inputted from the movieName and year textfields.
     public void onAdminRemoveMovieButtonClick() {
-
+        //find movieName in database and delete it
     }
 
 
