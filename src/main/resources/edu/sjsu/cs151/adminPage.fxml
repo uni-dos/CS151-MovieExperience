@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
    <children>
       <Label layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="68.0" text="Admin:">
          <font>
@@ -24,26 +24,18 @@
             <Font size="50.0" />
          </font>
       </Label>
-      <Label layoutX="36.0" layoutY="103.0" text="Search Movie">
+      <Label layoutX="241.0" layoutY="87.0" text="Movie Search">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="252.0" layoutY="103.0" text="Add Movie">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="427.0" layoutY="103.0" text="Remove Movie">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <TextField fx:id="networkMovieSearchTextField" layoutX="21.0" layoutY="151.0" promptText="Movie Name:" />
-      <TextField layoutX="225.0" layoutY="151.0" promptText="Movie Name:" />
-      <TextField layoutX="418.0" layoutY="151.0" promptText="Movie Name:" />
-      <Button layoutX="52.0" layoutY="187.0" mnemonicParsing="false" onAction="#onAdminSearchMovieButtonClick" text="Search Movie" />
-      <Button layoutX="263.0" layoutY="187.0" mnemonicParsing="false" onAction="#onAdminAddMovieButtonClick" text="Add Movie" />
-      <Button layoutX="445.0" layoutY="187.0" mnemonicParsing="false" onAction="#onAdminRemoveMovieButtonClick" text="Remove Movie" />
+      <TextField fx:id="networkMovieSearchTextField" layoutX="226.0" layoutY="126.0" promptText="Movie Name:" />
+      <Button fx:id="networkSearchMovieButton" layoutX="257.0" layoutY="200.0" mnemonicParsing="false" onAction="#onAdminSearchMovieButtonClick" text="Search Movie" />
+      <TextField fx:id="networkMovieYearTextField" layoutX="226.0" layoutY="157.0" promptText="Year Released:" />
+      <Button fx:id="networkAddMovieButton" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="263.0" layoutY="294.0" mnemonicParsing="false" onAction="#onAdminAddMovieButtonClick" text="Add Movie" textAlignment="RIGHT" visible="false" />
+      <Label fx:id="movieFoundLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="234.0" prefHeight="17.0" prefWidth="600.0" text="Movie Not Found" textAlignment="CENTER" visible="false" />
+      <Button fx:id="networkRemoveMovieButton" contentDisplay="CENTER" layoutX="254.0" layoutY="332.0" mnemonicParsing="false" onAction="#onAdminRemoveMovieButtonClick" text="Remove Movie" visible="false" />
+      <Label fx:id="addOrRemoveMovieNameLabel" alignment="CENTER" layoutX="1.0" layoutY="260.0" prefHeight="17.0" prefWidth="601.0" text="Add or Remove movie" visible="false" />
+      <Button fx:id="adminNewMovieSearchButton" layoutX="461.0" layoutY="351.0" mnemonicParsing="false" onAction="#onAdminNewMovieSearchButton" text="New Movie Search" />
    </children>
 </AnchorPane>

@@ -2,10 +2,11 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
    <children>
       <Label layoutX="189.0" layoutY="16.0" text="Available Movies">
          <font>
@@ -23,26 +24,9 @@
          </font>
       </Label>
       <Button layoutX="532.0" layoutY="14.0" mnemonicParsing="false" onAction="#onUserLogoutButtonClick" text="Logout" />
-      <Label layoutX="203.0" layoutY="84.0" text="Movie 1 (0000 - 2400)">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="203.0" layoutY="121.0" text="Movie 2 (0000 - 2400)">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="203.0" layoutY="158.0" text="Movie 3 (0000 - 2400)">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label layoutX="203.0" layoutY="195.0" text="Movie 4 (0000 - 2400)">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Button layoutX="247.0" layoutY="247.0" mnemonicParsing="false" onAction="#onUserNewTimeRangeButtonClick" text="New Time Range" />
+      <Button fx:id="newTimeRangeButton" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#onUserNewTimeRangeButtonClick" text="New Time Range" />
+      <ListView fx:id="myMovieListView" editable="true" layoutX="200.0" layoutY="67.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="confirmMovieSelectionButton" layoutX="228.0" layoutY="283.0" mnemonicParsing="false" onAction="#onUserConfirmMovieSelection" text="Confirm Movie Selection" />
+      <Label fx:id="selectedMovieLabel" alignment="CENTER" layoutY="322.0" prefHeight="0.0" prefWidth="600.0" text="Selected Movie" visible="false" />
    </children>
 </AnchorPane>
