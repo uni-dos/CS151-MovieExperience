@@ -3,6 +3,7 @@ package edu.sjsu.cs151;
 import edu.sjsu.cs151.models.Movie;
 import edu.sjsu.cs151.network.MovieRequest;
 import edu.sjsu.cs151.network.RetrofitInstance;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -90,14 +91,30 @@ public class MovieExperienceController implements Initializable {
     @FXML
     private Label addOrRemoveMovieNameLabel;
     @FXML
+    private Label queriedMovieLabel;
+    @FXML
     private Button adminNewMovieSearchButton;
+
 
     private String movieName;
     private String movieYear;
     private boolean movieFound;
 
+    public String getMovieName() {
+        return movieName;
+    }
+    public void setMovieName(String movieName) {
+        this.movieName = movieName;
+    }
 
-//START OF USER RELATED CODE ----------------------------------------------
+    public String getMovieYear() {
+        return movieYear;
+    }
+    public void setMovieYear(String movieYear) {
+        this.movieYear = movieYear;
+    }
+
+    //START OF USER RELATED CODE ----------------------------------------------
 
     //Homepage, when selecting user button takes you to userpage
     public void onUserButtonClick(ActionEvent event) throws IOException {
@@ -242,48 +259,72 @@ public class MovieExperienceController implements Initializable {
 
     //takes the text from the textfield and searches for it from the database
     public void onAdminSearchMovieButtonClick() {
-
-        movieYear = networkMovieYearTextField.getText();
+        String adminMovieTitleInput = networkMovieSearchTextField.getText();
+        String adminMovieYearInput = networkMovieYearTextField.getText();
+        networkSearchMovieButton.setVisible(false);
 
         String movieToSearch = networkMovieSearchTextField.getText();
-
+        queriedMovieLabel.setText("Queried Movie: " + movieToSearch);
+        queriedMovieLabel.setVisible(true);
+        adminNewMovieSearchButton.setVisible(true);
         MovieRequest connection = RetrofitInstance.getRetrofitInstance();
-
 
         connection.getMovieData(movieToSearch, movieYear).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                assert response.body() != null;
-                temp = response.body();
-
-                // add dialog to see if it was found
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        // Movie found
+                        temp = response.body();
+                        movieName = response.body().getTitle();
+                        movieYear = response.body().getYear();
+                        movieFound = true;
+                    } else {
+                        // Movie not found
+                        movieFound = false;
+                    }
+                } else {
+                    // Some error in response, movie not found
+                    movieFound = false;
+                }
                 System.out.println(response.body());
-                //Database.addMovie(response.body());
 
-                if (temp != null) { movieFound = true;} else { movieFound = false; }
 
+                // Update UI or perform actions here based on movieFound
+                updateUIBasedOnMovieFound(adminMovieTitleInput, adminMovieYearInput);
             }
 
             @Override
             public void onFailure(Call<Movie> call, Throwable throwable) {
+                movieFound = false; // Movie not found due to failure
+
+                // Handle failure scenario if needed
+                updateUIBasedOnMovieFound(adminMovieTitleInput, adminMovieYearInput);
             }
         });
+    }
 
-
+private void updateUIBasedOnMovieFound(String adminMovieTitleInput, String adminMovieYearInput) {
+    if (movieName == null) {
+        movieFound = false;
+    }
+    Platform.runLater(() -> {
         if (movieFound) {
             movieFoundLabel.setVisible(true);
             movieFoundLabel.setText("Movie Found");
-            addOrRemoveMovieNameLabel.setVisible(true);          //it would be better to grab these movie details from the database, but idk how to do that
-            addOrRemoveMovieNameLabel.setText("Remove movie: " + movieName + " " + movieYear);
+            addOrRemoveMovieNameLabel.setVisible(true);
+            addOrRemoveMovieNameLabel.setText("Remove movie: " + movieName + " (" + movieYear + ")");
             networkRemoveMovieButton.setVisible(true);
+            temp = null;
         } else {
             movieFoundLabel.setVisible(true);
-            movieFoundLabel.setText("Movie Found");
-            addOrRemoveMovieNameLabel.setVisible(true);         //it would be better to grab these movie details from the database, but idk how to do that
-            addOrRemoveMovieNameLabel.setText("Movie: " + movieName + " " + movieYear);
+            movieFoundLabel.setText("Movie Not Found");
+            addOrRemoveMovieNameLabel.setVisible(true);
+            addOrRemoveMovieNameLabel.setText("Add Movie: " + adminMovieTitleInput + " " + adminMovieYearInput);
             networkAddMovieButton.setVisible(true);
         }
-    }
+    });
+}
 
     //takes from the strings from movieName and year textfields, and adds movie to the database.
     public void onAdminAddMovieButtonClick() {
@@ -302,15 +343,21 @@ public class MovieExperienceController implements Initializable {
 
 
     public void onAdminNewMovieSearchButton() {
+        networkSearchMovieButton.setVisible(true);
+        adminNewMovieSearchButton.setVisible(false);
         movieFoundLabel.setVisible(false);
         addOrRemoveMovieNameLabel.setVisible(false);
         networkRemoveMovieButton.setVisible(false);
         networkAddMovieButton.setVisible(false);
+        queriedMovieLabel.setVisible(false);
         networkMovieSearchTextField.clear();
         networkMovieYearTextField.clear();
+        queriedMovieLabel.setText("DefaultQueriedMovieText");
+        movieFoundLabel.setText("DefaultFoundNotFoundText");
+        addOrRemoveMovieNameLabel.setText("DefaultAddOrRemoveMovieText");
         movieName = "";
         movieYear = "";
-        //movieFound = false;
+        movieFound = false;
     }
 
 //END OF ADMIN RELATED CODE -------------------------------------------------
