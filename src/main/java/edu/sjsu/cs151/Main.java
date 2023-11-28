@@ -21,14 +21,14 @@ public class Main {
 
                 if (response.isSuccessful()) {
                     Movie movie = response.body();
-                    Database db = Database.getInstance();
+
                     System.out.println(movie.getTitle());
                     System.out.println(movie.getRated());
                     System.out.println(movie.getPosterURL());
                     System.out.println(movie.getGenre());
                     System.out.println(movie.getPlot());
 
-                    db.saveMovie(movie);
+                    //db.saveMovie(movie);
 
                 } else {
                     System.out.println(response.errorBody());

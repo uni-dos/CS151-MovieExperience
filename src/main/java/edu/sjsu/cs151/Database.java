@@ -1,47 +1,47 @@
 package edu.sjsu.cs151;
 
 import edu.sjsu.cs151.models.Movie;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.*;
+import java.util.ArrayList;
 
 
 public class Database {
 
-    private static final String DB_URL = "jdbc:sqlite:identifier.sqlite";
+    private static ArrayList<Movie> movies = new ArrayList<>();
 
-    private static Database instance;
-    private Connection conn;
-
-    private Database() {
+    public static void addMovie(Movie movie) {
+        movies.add(movie);
+    }
+    public static void saveMovie() {
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite:identifier.sqlite");
-            Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, year TEXT)");
-        } catch (SQLException e) {
-            e.printStackTrace();
+            FileOutputStream fileOut = new FileOutputStream("movies.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(movies);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
         }
     }
 
-    public static Database getInstance() {
-        if (instance == null) {
-            instance = new Database();
-        }
-        return instance;
-    }
+    //to retrieve the saved ArrayList of Movie objects from disk
+    public static ArrayList<Movie> retrieveMovies() {
 
-    public void saveMovie(Movie movie) {
+
         try {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO movies (title, year) VALUES (?, ?)");
-            ps.setString(1, movie.getTitle());
-            ps.setString(2, movie.getYear());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+            FileInputStream fileIn = new FileInputStream("movies.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
 
+            movies = (ArrayList<Movie>) in.readObject();
+
+            in.close();
+            fileIn.close();
+
+        } catch (IOException | ClassNotFoundException i) {
+            i.printStackTrace();
+        }
+
+        return movies;
+    }
 }
 
