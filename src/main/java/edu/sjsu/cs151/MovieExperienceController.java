@@ -51,14 +51,11 @@ public class MovieExperienceController implements Initializable {
 
     //elements on userPage;
     @FXML
-    private TextField userStartTimeTextField;
-    @FXML
-    private TextField userEndTimeTextField;
+    private TextField userGenreTextField;
     @FXML
     private Button userSubmitButton;
 
-    private String movieStartTime;
-    private String movieEndTime;
+    private String userMovieGenre;
 
 
     private ObservableList movies = FXCollections.observableArrayList();
@@ -149,8 +146,7 @@ public class MovieExperienceController implements Initializable {
 
     //Any of the user pages. Clears all values stored from text fields and sends back to homePage.
     public void onUserLogoutButtonClick(ActionEvent event) throws IOException {
-        movieStartTime = "";
-        movieEndTime = "";
+        userMovieGenre = "";
         selectedMovie = "";
 
         root = FXMLLoader.load(getClass().getResource("homeView.fxml"));
@@ -162,8 +158,7 @@ public class MovieExperienceController implements Initializable {
 
     //reads startTime and endTime range used in generating the output of available movies in availableMovieList
     public void onUserSubmitButtonClick(ActionEvent event) throws IOException {
-        movieStartTime = userStartTimeTextField.getText();
-        movieEndTime = userEndTimeTextField.getText();
+        userMovieGenre = userGenreTextField.getText();
 
         root = FXMLLoader.load(getClass().getResource("userMovieList.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -174,9 +169,6 @@ public class MovieExperienceController implements Initializable {
 
     //initialize the list with movies this line is just an example, but we have to take movies from the database.
     //List<String> movies= new ArrayList<>(Arrays.asList("Spider-man", "How To Train Your Dragon", "Wall-E"));
-
-
-
     /*
         if (movie from database > movieStartTime && movie from database < movieEndTime)
         {
@@ -184,6 +176,54 @@ public class MovieExperienceController implements Initializable {
         }
      */
 
+    private void fetchMoviesAndUpdateListView() {
+        MovieRequest connection = RetrofitInstance.getRetrofitInstance();
+
+        connection.getMovieData().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<List<Movie>> call, Response<List<Movie>> response) {
+                if (response.isSuccessful()) {
+                    List<Movie> movieList = response.body();
+                    if (movieList != null && !movieList.isEmpty()) {
+                        ObservableList<String> movieTitles = FXCollections.observableArrayList();
+                        for (Movie movie : movieList) {
+                            String title = movie.getTitle();
+                            movieTitles.add(title);
+                            System.out.println("Retrieved movie title: " + title); // Check retrieved movie titles
+                        }
+                        Platform.runLater(() -> myMovieListView.setItems(movieTitles)); // Update UI on the main thread
+                    }
+                } else {
+                    // Handle an unsuccessful response
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Movie>> call, Throwable t) {
+                // Handle failure scenario
+            }
+        });
+    }
+
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        // Perform initializations or setup here when the FXML file is loaded
+
+        // Fetch movies and update the ListView
+        fetchMoviesAndUpdateListView();
+
+        // Set up a listener for handling movie selection events in the ListView
+        myMovieListView.getSelectionModel().selectedItemProperty().addListener(
+                (ObservableValue<? extends String> observableValue, String oldValue, String newValue) -> {
+                    // Handle movie selection event here
+                    selectedMovie = newValue; // Update selected movie value if needed
+                    // Other actions on movie selection
+                }
+        );
+    }
+
+/*
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         //movies.add(Database.retrieveMovies());
@@ -194,7 +234,7 @@ public class MovieExperienceController implements Initializable {
                 myMovieListView.getItems().add(m.getTitle());
             }
         }
-//        myMovieListView.getItems().addAll();      //adds movies from the movies array
+        myMovieListView.getItems().addAll();      //adds movies from the movies array
 
         //myMovieListView.getItems().addAll(Arrays.asList("Spider-man", "How To Train Your Dragon", "Wall-E"));
         myMovieListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -204,6 +244,7 @@ public class MovieExperienceController implements Initializable {
             }
         });
     }
+ */
 
     public void onUserConfirmMovieSelection(ActionEvent event) throws IOException {
         selectedMovieLabel.setText("Selected Movie: " + selectedMovie);
@@ -213,8 +254,7 @@ public class MovieExperienceController implements Initializable {
 
     //clears values in startTime and endTime range, and sends the user back to the userPage, where they are prompted for a new time range
     public void onUserNewTimeRangeButtonClick(ActionEvent event) throws IOException {
-        movieStartTime = "";
-        movieEndTime = "";
+        userMovieGenre = "";
         selectedMovie = "";
 
         root = FXMLLoader.load(getClass().getResource("userPage.fxml"));
@@ -289,9 +329,6 @@ public class MovieExperienceController implements Initializable {
                     movieFound = false;
                 }
                 System.out.println(response.body());
-
-
-
 
                 // Update UI or perform actions here based on movieFound
                 updateUIBasedOnMovieFound(adminMovieTitleInput, adminMovieYearInput);

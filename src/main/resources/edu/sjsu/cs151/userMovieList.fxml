@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.sjsu.cs151.MovieExperienceController">
    <children>
       <Label layoutX="189.0" layoutY="16.0" text="Available Movies">
          <font>
@@ -25,7 +25,7 @@
       </Label>
       <Button layoutX="532.0" layoutY="14.0" mnemonicParsing="false" onAction="#onUserLogoutButtonClick" text="Logout" />
       <Button fx:id="newTimeRangeButton" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#onUserNewTimeRangeButtonClick" text="New Time Range" />
-      <ListView fx:id="myMovieListView" editable="true" layoutX="200.0" layoutY="67.0" prefHeight="200.0" prefWidth="200.0" />
+      <ListView fx:id="myMovieListView" editable="true" fixedCellSize="1.0" layoutX="200.0" layoutY="67.0" prefHeight="200.0" prefWidth="200.0" />
       <Button fx:id="confirmMovieSelectionButton" layoutX="228.0" layoutY="283.0" mnemonicParsing="false" onAction="#onUserConfirmMovieSelection" text="Confirm Movie Selection" />
       <Label fx:id="selectedMovieLabel" alignment="CENTER" layoutY="322.0" prefHeight="0.0" prefWidth="600.0" text="Selected Movie" visible="false" />
    </children>
