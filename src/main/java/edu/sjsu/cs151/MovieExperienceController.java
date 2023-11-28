@@ -91,6 +91,8 @@ public class MovieExperienceController implements Initializable {
     @FXML
     private Label addOrRemoveMovieNameLabel;
     @FXML
+    private Label queriedMovieLabel;
+    @FXML
     private Button adminNewMovieSearchButton;
 
     private String movieName;
@@ -235,11 +237,14 @@ public class MovieExperienceController implements Initializable {
 
     //takes the text from the textfield and searches for it from the database
     public void onAdminSearchMovieButtonClick() {
+        networkSearchMovieButton.setVisible(false);
         movieName = networkMovieSearchTextField.getText();
         movieYear = networkMovieYearTextField.getText();
 
         String movieToSearch = networkMovieSearchTextField.getText();
-
+        queriedMovieLabel.setText("Queried Movie: " + movieToSearch);
+        queriedMovieLabel.setVisible(true);
+        adminNewMovieSearchButton.setVisible(true);
         MovieRequest connection = RetrofitInstance.getRetrofitInstance();
 
         Database db = Database.getInstance();
@@ -250,9 +255,7 @@ public class MovieExperienceController implements Initializable {
                 temp = response.body();
                 System.out.println(response.body());
                 db.saveMovie(response.body());
-
-                //if (movie != null) { movieFound = true;} else { movieFound = false; }
-
+                /////FIX THIS, SET movieFound TRUE IF THE MOVIE IS IN THE DATABASE
             }
 
             @Override
@@ -271,7 +274,7 @@ public class MovieExperienceController implements Initializable {
             movieFoundLabel.setVisible(true);
             movieFoundLabel.setText("Movie Not Found");
             addOrRemoveMovieNameLabel.setVisible(true);         //it would be better to grab these movie details from the database, but idk how to do that
-            addOrRemoveMovieNameLabel.setText("Remove movie: " + movieName + " " + movieYear);
+            addOrRemoveMovieNameLabel.setText("Add movie: " + movieName + " " + movieYear);
             networkAddMovieButton.setVisible(true);
         }
     }
@@ -291,15 +294,21 @@ public class MovieExperienceController implements Initializable {
 
 
     public void onAdminNewMovieSearchButton() {
+        adminNewMovieSearchButton.setVisible(false);
         movieFoundLabel.setVisible(false);
         addOrRemoveMovieNameLabel.setVisible(false);
         networkRemoveMovieButton.setVisible(false);
         networkAddMovieButton.setVisible(false);
+        queriedMovieLabel.setVisible(false);
         networkMovieSearchTextField.clear();
         networkMovieYearTextField.clear();
+        queriedMovieLabel.setText("DefaultQueriedMovieText");
+        movieFoundLabel.setText("DefaultFoundOrNotFoundText");
+        addOrRemoveMovieNameLabel.setText("DefaultAddOrRemoveMovieText");
         movieName = "";
         movieYear = "";
         movieFound = false;
+        networkSearchMovieButton.setVisible(true);
     }
 
 //END OF ADMIN RELATED CODE -------------------------------------------------
