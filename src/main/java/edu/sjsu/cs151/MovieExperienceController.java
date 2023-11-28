@@ -5,6 +5,9 @@ import edu.sjsu.cs151.network.MovieRequest;
 import edu.sjsu.cs151.network.RetrofitInstance;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +41,6 @@ public class MovieExperienceController implements Initializable {
     private Movie temp = null;
 
 
-
     //elements on homePage
     @FXML
     private Button userButton;
@@ -61,9 +60,10 @@ public class MovieExperienceController implements Initializable {
     private String movieEndTime;
 
 
+    private ObservableList movies = FXCollections.observableArrayList();
     //elements on availableMovieList page;
     @FXML
-    private ListView<String> myMovieListView = new ListView<>();
+    private ListView<String> myMovieListView = new ListView<>(movies);
     @FXML
     private Button confirmMovieSelectionButton;
     @FXML
@@ -72,7 +72,6 @@ public class MovieExperienceController implements Initializable {
     private Label selectedMovieLabel;
 
     private String selectedMovie;
-
 
 
     //elements on adminPage
@@ -96,8 +95,6 @@ public class MovieExperienceController implements Initializable {
     private String movieName;
     private String movieYear;
     private boolean movieFound;
-
-
 
 
 //START OF USER RELATED CODE ----------------------------------------------
@@ -159,7 +156,10 @@ public class MovieExperienceController implements Initializable {
     }
 
     //initialize the list with movies this line is just an example, but we have to take movies from the database.
-    List<String> movies= new ArrayList<>(Arrays.asList("Spider-man", "How To Train Your Dragon", "Wall-E"));
+    //List<String> movies= new ArrayList<>(Arrays.asList("Spider-man", "How To Train Your Dragon", "Wall-E"));
+
+
+
     /*
         if (movie from database > movieStartTime && movie from database < movieEndTime)
         {
@@ -169,8 +169,17 @@ public class MovieExperienceController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        myMovieListView.getItems().addAll(movies);      //adds movies from the movies array
+        //movies.add(Database.retrieveMovies());
+        ArrayList<Movie> list = Database.retrieveMovies();
 
+        if (list != null) {
+            for (Movie m : list) {
+                myMovieListView.getItems().add(m.getTitle());
+            }
+        }
+//        myMovieListView.getItems().addAll();      //adds movies from the movies array
+
+        //myMovieListView.getItems().addAll(Arrays.asList("Spider-man", "How To Train Your Dragon", "Wall-E"));
         myMovieListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -199,8 +208,6 @@ public class MovieExperienceController implements Initializable {
     }
 
 //END OF USER RELATED CODE ---------------------------------------------------
-
-
 
 
 //START OF ADMIN RELATED CODE ------------------------------------------------
@@ -235,23 +242,25 @@ public class MovieExperienceController implements Initializable {
 
     //takes the text from the textfield and searches for it from the database
     public void onAdminSearchMovieButtonClick() {
-        movieName = networkMovieSearchTextField.getText();
+
         movieYear = networkMovieYearTextField.getText();
 
         String movieToSearch = networkMovieSearchTextField.getText();
 
         MovieRequest connection = RetrofitInstance.getRetrofitInstance();
 
-        Database db = Database.getInstance();
-        connection.getMovieData(movieToSearch, null).enqueue(new Callback<>() {
+
+        connection.getMovieData(movieToSearch, movieYear).enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 assert response.body() != null;
                 temp = response.body();
-                System.out.println(response.body());
-                db.saveMovie(response.body());
 
-                //if (movie != null) { movieFound = true;} else { movieFound = false; }
+                // add dialog to see if it was found
+                System.out.println(response.body());
+                //Database.addMovie(response.body());
+
+                if (temp != null) { movieFound = true;} else { movieFound = false; }
 
             }
 
@@ -260,18 +269,18 @@ public class MovieExperienceController implements Initializable {
             }
         });
 
-        if(movieFound) {
+
+        if (movieFound) {
             movieFoundLabel.setVisible(true);
             movieFoundLabel.setText("Movie Found");
             addOrRemoveMovieNameLabel.setVisible(true);          //it would be better to grab these movie details from the database, but idk how to do that
             addOrRemoveMovieNameLabel.setText("Remove movie: " + movieName + " " + movieYear);
             networkRemoveMovieButton.setVisible(true);
-        }
-        else {
+        } else {
             movieFoundLabel.setVisible(true);
-            movieFoundLabel.setText("Movie Not Found");
+            movieFoundLabel.setText("Movie Found");
             addOrRemoveMovieNameLabel.setVisible(true);         //it would be better to grab these movie details from the database, but idk how to do that
-            addOrRemoveMovieNameLabel.setText("Remove movie: " + movieName + " " + movieYear);
+            addOrRemoveMovieNameLabel.setText("Movie: " + movieName + " " + movieYear);
             networkAddMovieButton.setVisible(true);
         }
     }
@@ -279,8 +288,10 @@ public class MovieExperienceController implements Initializable {
     //takes from the strings from movieName and year textfields, and adds movie to the database.
     public void onAdminAddMovieButtonClick() {
         if (temp != null && temp.getTitle() != null) {
+
             // add to database here
-            Database.getInstance().saveMovie(temp);
+            Database.addMovie(temp);
+            Database.saveMovie();
         }
     }
 
@@ -299,7 +310,7 @@ public class MovieExperienceController implements Initializable {
         networkMovieYearTextField.clear();
         movieName = "";
         movieYear = "";
-        movieFound = false;
+        //movieFound = false;
     }
 
 //END OF ADMIN RELATED CODE -------------------------------------------------
